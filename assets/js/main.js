@@ -192,7 +192,7 @@
     if (!box) return;
     var items = FILES.filter(function (f) { return f.featured && f.url; }).sort(byNewest);
     box.innerHTML = items.map(function (f) {
-      return '<a class="link-btn primary js-download" href="' + esc(f.url) + '" target="_blank" rel="noopener"><span>' + esc(f.title) +
+      return '<a class="link-btn primary js-download" href="' + esc(f.url) + '" target="_blank" rel="noopener"><span><em class="lb-badge"><i></i>Latest upload</em>' + esc(f.title) +
         (f.desc ? '<small>' + esc(f.desc) + '</small>' : "") + '</span>' + ICON_DL + '</a>';
     }).join("");
   }
