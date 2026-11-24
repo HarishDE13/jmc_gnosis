@@ -9,5 +9,5 @@ window.GNOSIS_CONFIG = {
   youtubeUrl: "",                     // optional
 
   // Google Sheet with your materials list (File > Share > Publish to web > CSV). Leave "" to use materials-data.js.
-  sheetCsvUrl: ""
+  sheetCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIuZeCLMKd4Q7cpL7uNzd0yTidQ1i_fYa8mSPxf0Sxdn7fh4kwIHoa5IFerdbr5V7cVegEWGZq5wcI/pub?output=csv"
 };
