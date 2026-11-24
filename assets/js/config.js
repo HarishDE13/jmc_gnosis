@@ -6,5 +6,8 @@ window.GENOSIS_CONFIG = {
   whatsappNumber: "",                 // e.g. "919876543210" (country code, no + or spaces). Leave "" to hide WhatsApp.
   email: "",                          // e.g. "hello@jmcgenosis.in". Leave "" to hide email.
   telegramUrl: "",                    // optional
-  youtubeUrl: ""                      // optional
+  youtubeUrl: "",                     // optional
+
+  // Google Sheet with your materials list (File > Share > Publish to web > CSV). Leave "" to use materials-data.js.
+  sheetCsvUrl: ""
 };

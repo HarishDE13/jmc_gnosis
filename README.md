@@ -13,7 +13,18 @@ Live site: https://harishde13.github.io/jmc_genosis/
 | Study materials and their Google Drive links | `assets/js/materials-data.js` |
 | Unit names and focus lines | `assets/js/materials-data.js` (`GENOSIS_UNITS`) |
 
-## Add a new study material
+## Easiest way: manage materials from a Google Sheet
+
+The site can read its materials list straight from a Google Sheet, so adding a row is all it takes.
+
+1. Create a Google Sheet and import `JMC-Genosis-materials-template.csv` (File → Import → Upload → Replace current sheet).
+2. File → Share → **Publish to web** → choose the sheet tab and **Comma-separated values (.csv)** → Publish. Copy the link.
+3. Paste that link into `sheetCsvUrl` in `assets/js/config.js` (one time only).
+
+Columns: **Title**, **Type** (Guide, Notes, PYQ, Revision, Practice paper), **Unit** (1–10 or "Whole paper"), **Link** (Drive link, sharing set to "Anyone with the link"), **Date added** (YYYY-MM-DD), **Featured** (Yes on one row: the guide shown on Home and Guide pages), **Description** (optional), **Show** (No hides a row).
+New rows appear on the site within about 5 minutes. If the sheet can't be reached, the site falls back to `materials-data.js`.
+
+## Add a new study material (without the sheet)
 
 1. Upload the PDF to Google Drive and set sharing to **Anyone with the link**.
 2. Open `assets/js/materials-data.js` on GitHub and click the pencil icon.

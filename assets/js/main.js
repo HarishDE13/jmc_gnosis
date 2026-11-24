@@ -55,6 +55,7 @@
   });
 
   /* ---------- Guide embeds ---------- */
+  function applyGuide() {
   document.querySelectorAll("[data-guide-frame]").forEach(function (f) {
     var g = FILES.filter(function (x) { return x.featured && x.url; })[0];
     if (g) f.src = previewUrl(g.url);
@@ -67,6 +68,9 @@
     var g = FILES.filter(function (x) { return x.featured && x.url; })[0];
     if (g) { a.href = g.url; a.setAttribute("rel", "noopener"); a.setAttribute("target", "_blank"); }
   });
+
+  }
+  applyGuide();
 
   /* ---------- Toast nudging Instagram after a download ---------- */
   var toast;
@@ -172,12 +176,14 @@
   });
 
   /* ---------- Links page: latest file ---------- */
-  var latest = document.getElementById("latest-link");
-  if (latest) {
+  function applyLatest() {
+    var latest = document.getElementById("latest-link");
+    if (!latest) return;
     var ready = FILES.filter(function (f) { return f.url; }).sort(function (a, b) { return (b.added || "").localeCompare(a.added || ""); });
-    if (ready.length) { latest.href = ready[0].url; latest.target = "_blank"; latest.rel = "noopener"; latest.querySelector("small").textContent = ready[0].title; }
+    if (ready.length) { latest.hidden = false; latest.href = ready[0].url; latest.target = "_blank"; latest.rel = "noopener"; latest.querySelector("small").textContent = ready[0].title; }
     else latest.hidden = true;
   }
+  applyLatest();
 
   /* ---------- Contact form ---------- */
   var form = document.getElementById("contact-form");
@@ -222,6 +228,58 @@
     });
   } else {
     revealEls.forEach(function (el) { el.classList.add("in"); if (el.dataset.count) el.textContent = (el.dataset.pre || "") + el.dataset.count + (el.dataset.suf || ""); });
+  }
+
+  /* ---------- Google Sheet: live materials list ----------
+     If config.js has sheetCsvUrl, the materials list is read from that published sheet.
+     If the sheet can't be loaded, the list in materials-data.js is used instead. */
+  function parseCSV(text) {
+    var rows = [], row = [], cell = "", q = false;
+    for (var i = 0; i < text.length; i++) {
+      var c = text[i];
+      if (q) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
+      else if (c === '"') q = true;
+      else if (c === ",") { row.push(cell); cell = ""; }
+      else if (c === "\n" || c === "\r") { if (c === "\r" && text[i + 1] === "\n") i++; row.push(cell); rows.push(row); row = []; cell = ""; }
+      else cell += c;
+    }
+    if (cell !== "" || row.length) { row.push(cell); rows.push(row); }
+    return rows;
+  }
+  function toDate(v) {
+    v = String(v || "").trim(); if (!v) return "";
+    var m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return m[1] + "-" + m[2].padStart(2, "0") + "-" + m[3].padStart(2, "0");
+    m = v.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);
+    if (m) { var a = +m[1], b = +m[2], day = a, mon = b; if (b > 12 && a <= 12) { day = b; mon = a; } // DD/MM/YYYY, or MM/DD/YYYY when obvious
+      return m[3] + "-" + String(mon).padStart(2, "0") + "-" + String(day).padStart(2, "0"); }
+    var d = new Date(v); return isNaN(d) ? "" : d.toISOString().slice(0, 10);
+  }
+  function rowsToFiles(rows) {
+    if (!rows.length) return [];
+    var head = rows[0].map(function (h) { return h.trim().toLowerCase(); });
+    function col(r, names) { for (var i = 0; i < names.length; i++) { var k = head.indexOf(names[i]); if (k > -1) return (r[k] || "").trim(); } return ""; }
+    var typeMap = { guide: "guide", notes: "notes", note: "notes", pyq: "pyq", "previous year questions": "pyq", revision: "revision", mock: "mock", "practice paper": "mock", practice: "mock" };
+    return rows.slice(1).map(function (r) {
+      var title = col(r, ["title"]); if (!title) return null;
+      var show = col(r, ["show", "visible", "publish"]).toLowerCase(); if (show === "no" || show === "false" || show === "hide") return null;
+      var unitRaw = col(r, ["unit"]); var unit = parseInt(unitRaw, 10); if (isNaN(unit)) unit = 0;
+      var feat = col(r, ["featured"]).toLowerCase();
+      return { unit: unit, type: typeMap[col(r, ["type"]).toLowerCase()] || "notes", title: title,
+        desc: col(r, ["description", "desc"]), url: col(r, ["link", "url", "drive link"]),
+        added: toDate(col(r, ["date added", "added", "date"])), featured: feat === "yes" || feat === "true" || feat === "y" };
+    }).filter(Boolean);
+  }
+  if (CFG.sheetCsvUrl) {
+    var sep = CFG.sheetCsvUrl.indexOf("?") > -1 ? "&" : "?";
+    fetch(CFG.sheetCsvUrl + sep + "t=" + Math.floor(Date.now() / 60000), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
+      .then(function (t) {
+        var list = rowsToFiles(parseCSV(t));
+        if (!list.length) return;
+        if (!list.some(function (f) { return f.featured; })) { var old = FILES.filter(function (f) { return f.featured; }); list = old.concat(list); }
+        FILES = list; applyGuide(); renderMaterials(); applyLatest();
+      })
+      .catch(function () { /* keep materials-data.js */ });
   }
 
   document.querySelectorAll("[data-year]").forEach(function (el) { el.textContent = new Date().getFullYear(); });
