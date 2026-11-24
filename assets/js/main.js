@@ -54,23 +54,11 @@
     var open = nav.classList.toggle("open"); menuBtn.setAttribute("aria-expanded", String(open));
   });
 
-  /* ---------- Guide embeds ---------- */
-  function applyGuide() {
-  document.querySelectorAll("[data-guide-frame]").forEach(function (f) {
-    var g = FILES.filter(function (x) { return x.featured && x.url; })[0];
-    if (g) f.src = previewUrl(g.url);
-  });
-  document.querySelectorAll("[data-guide-download]").forEach(function (a) {
-    var g = FILES.filter(function (x) { return x.featured && x.url; })[0];
-    if (g) { a.href = downloadUrl(g.url); a.setAttribute("rel", "noopener"); a.setAttribute("target", "_blank"); }
-  });
-  document.querySelectorAll("[data-guide-open]").forEach(function (a) {
-    var g = FILES.filter(function (x) { return x.featured && x.url; })[0];
-    if (g) { a.href = g.url; a.setAttribute("rel", "noopener"); a.setAttribute("target", "_blank"); }
-  });
-
-  }
-  applyGuide();
+  /* ---------- JRF Guide (fixed PDF, not driven by the sheet) ---------- */
+  var GUIDE_URL = CFG.guidePdfUrl || "https://drive.google.com/file/d/1wI1Hn6v-Gn_UrkSw7tmBaGiYjvWi6dT5/view";
+  document.querySelectorAll("[data-guide-frame]").forEach(function (f) { f.src = previewUrl(GUIDE_URL); });
+  document.querySelectorAll("[data-guide-download]").forEach(function (a) { a.href = downloadUrl(GUIDE_URL); a.rel = "noopener"; a.target = "_blank"; });
+  document.querySelectorAll("[data-guide-open]").forEach(function (a) { a.href = GUIDE_URL; a.rel = "noopener"; a.target = "_blank"; });
 
   /* ---------- Toast nudging Instagram after a download ---------- */
   var toast;
@@ -115,17 +103,40 @@
     return true;
   }
   function card(f) {
-    var tags = '<span class="tag">' + esc(TYPE[f.type] || f.type) + '</span>' + (isNew(f) ? '<span class="tag new">New</span>' : "");
+    var tags = '<span class="tag">' + esc(TYPE[f.type] || f.type) + '</span>' + (f.fresh || isNew(f) ? '<span class="tag new">New</span>' : "");
     var acts = f.url
       ? '<button type="button" class="btn outline sm" data-preview="' + esc(f.url) + '" data-title="' + esc(f.title) + '">Quick look</button>' +
         '<a class="btn sm js-download" href="' + esc(downloadUrl(f.url)) + '" target="_blank" rel="noopener">Download PDF</a>'
       : '<span class="btn sm is-disabled" aria-disabled="true">Coming soon</span>';
-    return '<article class="file-card"><div class="meta">' + tags + '</div><h3>' + esc(f.title) + '</h3><div class="acts">' + acts + '</div></article>';
+    return '<article class="file-card"><div class="meta">' + tags + '</div><h3>' + esc(f.title) + '</h3>' + (f.desc ? '<p class="muted small">' + esc(f.desc) + '</p>' : "") + '<div class="acts">' + acts + '</div></article>';
+  }
+  var ICON_EYE = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var ICON_DL = '<svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M5 20h14"/></svg>';
+  function byNewest(a, b) { return (b.added || "").localeCompare(a.added || ""); }
+  function renderFeatured() {
+    var box = document.getElementById("featured");
+    if (!box) return;
+    var items = FILES.filter(function (f) { return f.featured && f.url; }).sort(byNewest);
+    box.hidden = !items.length;
+    box.innerHTML = items.map(function (f) {
+      return '<div class="feature-file reveal in"><span class="pdf-ico">PDF</span>' +
+        '<div><span class="tag new">Featured</span><h2 style="font-size:1.4rem;margin:10px 0 6px">' + esc(f.title) + '</h2>' +
+        (f.desc ? '<p class="muted">' + esc(f.desc) + '</p>' : "") + '</div>' +
+        '<div class="btn-row"><button type="button" class="btn outline sm" data-preview="' + esc(f.url) + '" data-title="' + esc(f.title) + '">' + ICON_EYE + 'Quick look</button>' +
+        '<a class="btn sm js-download" href="' + esc(downloadUrl(f.url)) + '" target="_blank" rel="noopener">' + ICON_DL + 'Download PDF</a></div></div>';
+    }).join("");
+  }
+  function renderNewUploads() {
+    var sec = document.getElementById("new-uploads");
+    if (!sec) return;
+    var items = FILES.filter(function (f) { return f.fresh && f.url; }).sort(byNewest);
+    sec.hidden = !items.length;
+    sec.querySelector(".files").innerHTML = items.map(card).join("");
   }
   function renderMaterials() {
     var out = document.getElementById("materials");
     if (!out) return;
-    var list = FILES.filter(function (f) { return !f.featured; }).filter(matches);
+    var list = FILES.filter(matches);
     var ready = list.filter(function (f) { return f.url; }).length;
     document.getElementById("result-count").textContent = list.length ? ready + " of " + list.length + " files ready. More are added every week." : "";
     if (!list.length) { out.innerHTML = '<div class="empty">No files match these filters yet. Try another unit or type.</div>'; return; }
@@ -151,7 +162,7 @@
         state[g.dataset.filter] = b.dataset.value; renderMaterials();
       });
     });
-    renderMaterials();
+    renderFeatured(); renderNewUploads(); renderMaterials();
     var m = location.hash.match(/^#unit-(\d+)$/);
     if (m) setTimeout(function () { var el = document.getElementById("unit-" + m[1]); if (el) el.scrollIntoView(); }, 60);
   }
@@ -263,10 +274,10 @@
       var title = col(r, ["title"]); if (!title) return null;
       var show = col(r, ["show", "visible", "publish"]).toLowerCase(); if (show === "no" || show === "false" || show === "hide") return null;
       var unitRaw = col(r, ["unit"]); var unit = parseInt(unitRaw, 10); if (isNaN(unit)) unit = 0;
-      var feat = col(r, ["featured"]).toLowerCase();
+      function yes(v) { v = v.toLowerCase(); return v === "yes" || v === "y" || v === "true"; }
       return { unit: unit, type: typeMap[col(r, ["type"]).toLowerCase()] || "notes", title: title,
         desc: col(r, ["description", "desc"]), url: col(r, ["link", "url", "drive link"]),
-        added: toDate(col(r, ["date added", "added", "date"])), featured: feat === "yes" || feat === "true" || feat === "y" };
+        added: toDate(col(r, ["date added", "added", "date"])), featured: yes(col(r, ["featured"])), fresh: yes(col(r, ["new upload", "new uploads", "new"])) };
     }).filter(Boolean);
   }
   if (CFG.sheetCsvUrl) {
@@ -276,8 +287,7 @@
       .then(function (t) {
         var list = rowsToFiles(parseCSV(t));
         if (!list.length) return;
-        if (!list.some(function (f) { return f.featured; })) { var old = FILES.filter(function (f) { return f.featured; }); list = old.concat(list); }
-        FILES = list; applyGuide(); renderMaterials(); applyLatest();
+        FILES = list; renderFeatured(); renderNewUploads(); renderMaterials(); applyLatest();
       })
       .catch(function () { /* keep materials-data.js */ });
   }

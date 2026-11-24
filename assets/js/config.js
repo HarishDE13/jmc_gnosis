@@ -8,6 +8,9 @@ window.GNOSIS_CONFIG = {
   telegramUrl: "",                    // optional
   youtubeUrl: "",                     // optional
 
+  // JRF Guide PDF, used on the Home and JRF Guide pages only. Not affected by the sheet.
+  guidePdfUrl: "https://drive.google.com/file/d/1wI1Hn6v-Gn_UrkSw7tmBaGiYjvWi6dT5/view",
+
   // Google Sheet with your materials list (File > Share > Publish to web > CSV). Leave "" to use materials-data.js.
   sheetCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTIuZeCLMKd4Q7cpL7uNzd0yTidQ1i_fYa8mSPxf0Sxdn7fh4kwIHoa5IFerdbr5V7cVegEWGZq5wcI/pub?output=csv"
 };

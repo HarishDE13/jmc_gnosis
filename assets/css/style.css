@@ -369,3 +369,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .chip-float.a { top: 3%; }
   .chip-float.b { bottom: 3%; }
 }
+
+/* Featured + New uploads (driven by the Google Sheet) */
+.featured-list { display: grid; gap: 16px; margin-bottom: 48px; }
+.new-uploads { margin-bottom: 48px; }
+.nu-head { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+.nu-head h2, .lib-title { font-size: clamp(1.4rem, 2.4vw, 1.9rem); }
+.lib-title { margin-bottom: 18px; }
+.new-uploads .file-card { border-color: var(--lilac-300); }
+.file-card p.small { font-size: .9rem; line-height: 1.55; margin-top: -6px; }

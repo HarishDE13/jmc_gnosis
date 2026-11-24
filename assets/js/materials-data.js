@@ -7,7 +7,9 @@
   unit:  1-10 for a syllabus unit, 0 for whole-paper items (guides, PYQ papers, full mocks)
   type:  "guide", "notes", "pyq", "revision" or "mock"
   added: date you published it, "YYYY-MM-DD" (shows a NEW tag for 21 days)
-  featured: true shows it in the big box at the top of the Materials page (use on one file)
+  featured: true shows it in the Featured box at the top of the Materials page
+  fresh: true lists it under "New uploads" on the Materials page
+  (This file is only a backup. The live list comes from the Google Sheet set in config.js.)
 */
 window.GNOSIS_UNITS = [
   { n: 1,  name: "Introduction to Journalism & Mass Communication", focus: "Communication models and theories, history of Indian journalism", tier: "Tier 1 · Master" },
@@ -23,7 +25,7 @@ window.GNOSIS_UNITS = [
 ];
 
 window.GNOSIS_MATERIALS = [
-  { unit: 0, type: "guide", featured: true,
+  { unit: 0, type: "guide",
     title: "JRF Cracking Guide: UGC-NET Journalism & Mass Communication",
     desc: "A 7-page roadmap: what JRF takes, how to diagnose your gaps, the five common mistakes, where to start and the full syllabus checklist.",
     url: "https://drive.google.com/file/d/1wI1Hn6v-Gn_UrkSw7tmBaGiYjvWi6dT5/view?usp=sharing", added: "2026-11-24" },
