@@ -56,9 +56,6 @@
 
   /* ---------- JRF Guide (fixed PDF, not driven by the sheet) ---------- */
   var GUIDE_URL = CFG.guidePdfUrl || "https://drive.google.com/file/d/1wI1Hn6v-Gn_UrkSw7tmBaGiYjvWi6dT5/view";
-  // The JRF Guide lives on its own page, so it is never listed on Free Materials.
-  function notGuide(f) { return !(f.url && driveId(f.url) && driveId(f.url) === driveId(GUIDE_URL)); }
-  FILES = FILES.filter(notGuide);
   document.querySelectorAll("[data-guide-frame]").forEach(function (f) { f.src = previewUrl(GUIDE_URL); });
   document.querySelectorAll("[data-guide-download]").forEach(function (a) { a.href = downloadUrl(GUIDE_URL); a.rel = "noopener"; a.target = "_blank"; });
   document.querySelectorAll("[data-guide-open]").forEach(function (a) { a.href = GUIDE_URL; a.rel = "noopener"; a.target = "_blank"; });
@@ -263,21 +260,22 @@
   function toDate(v) {
     v = String(v || "").trim(); if (!v) return "";
     var m = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if (m) return m[1] + "-" + m[2].padStart(2, "0") + "-" + m[3].padStart(2, "0");
-    m = v.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/);
-    if (m) { var a = +m[1], b = +m[2], day = a, mon = b; if (b > 12 && a <= 12) { day = b; mon = a; } // DD/MM/YYYY, or MM/DD/YYYY when obvious
-      return m[3] + "-" + String(mon).padStart(2, "0") + "-" + String(day).padStart(2, "0"); }
+    m = v.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2}|\d{4})\b/);
+    if (m) { var a = +m[1], b = +m[2], day = a, mon = b, yr = m[3].length === 2 ? "20" + m[3] : m[3]; if (b > 12 && a <= 12) { day = b; mon = a; } // DD/MM/YY(YY), or MM/DD when obvious
+      return yr + "-" + String(mon).padStart(2, "0") + "-" + String(day).padStart(2, "0"); }
     var d = new Date(v); return isNaN(d) ? "" : d.toISOString().slice(0, 10);
   }
   function rowsToFiles(rows) {
     if (!rows.length) return [];
-    var head = rows[0].map(function (h) { return h.trim().toLowerCase(); });
-    function col(r, names) { for (var i = 0; i < names.length; i++) { var k = head.indexOf(names[i]); if (k > -1) return (r[k] || "").trim(); } return ""; }
+    function norm(h) { return String(h || "").replace(/^\uFEFF/, "").toLowerCase().replace(/[^a-z]/g, ""); }
+    var head = rows[0].map(norm);
+    function col(r, names) { for (var i = 0; i < names.length; i++) { var k = head.indexOf(norm(names[i])); if (k > -1) return (r[k] || "").trim(); } return ""; }
     var typeMap = { guide: "guide", notes: "notes", note: "notes", pyq: "pyq", "previous year questions": "pyq", revision: "revision", mock: "mock", "practice paper": "mock", practice: "mock" };
     return rows.slice(1).map(function (r) {
       var title = col(r, ["title"]); if (!title) return null;
-      var show = col(r, ["show", "visible", "publish"]).toLowerCase(); if (show === "no" || show === "false" || show === "hide") return null;
+      var show = col(r, ["show", "visible", "publish"]).trim().toLowerCase(); if (show === "no" || show === "n" || show === "false" || show === "hide") return null;
       var unitRaw = col(r, ["unit"]); var unit = parseInt(unitRaw, 10); if (isNaN(unit)) unit = 0;
-      function yes(v) { v = v.toLowerCase(); return v === "yes" || v === "y" || v === "true"; }
+      function yes(v) { v = String(v || "").trim().toLowerCase(); return v === "yes" || v === "y" || v === "true" || v === "1" || v === "✓"; }
       return { unit: unit, type: typeMap[col(r, ["type"]).toLowerCase()] || "notes", title: title,
         desc: col(r, ["description", "desc"]), url: col(r, ["link", "url", "drive link"]),
         added: toDate(col(r, ["date added", "added", "date"])), featured: yes(col(r, ["featured"])), fresh: yes(col(r, ["new upload", "new uploads", "new"])) };
@@ -288,7 +286,7 @@
     fetch(CFG.sheetCsvUrl + sep + "t=" + Math.floor(Date.now() / 60000), { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (t) {
-        var list = rowsToFiles(parseCSV(t)).filter(notGuide);
+        var list = rowsToFiles(parseCSV(t));
         if (!list.length) return;
         FILES = list; renderFeatured(); renderNewUploads(); renderMaterials(); applyLatest();
       })
