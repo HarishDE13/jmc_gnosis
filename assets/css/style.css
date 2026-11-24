@@ -378,3 +378,5 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .lib-title { margin-bottom: 18px; }
 .new-uploads .file-card { border-color: var(--lilac-300); }
 .file-card p.small { font-size: .9rem; line-height: 1.55; margin-top: -6px; }
+.featured-links { display: grid; gap: 14px; }
+.featured-links:empty { display: none; }

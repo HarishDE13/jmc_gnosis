@@ -186,13 +186,15 @@
     if (modal.showModal) modal.showModal(); else window.open(b.dataset.preview, "_blank", "noopener");
   });
 
-  /* ---------- Links page: latest file ---------- */
+  /* ---------- Links page: Featured rows from the sheet ---------- */
   function applyLatest() {
-    var latest = document.getElementById("latest-link");
-    if (!latest) return;
-    var ready = FILES.filter(function (f) { return f.url; }).sort(function (a, b) { return (b.added || "").localeCompare(a.added || ""); });
-    if (ready.length) { latest.hidden = false; latest.href = ready[0].url; latest.target = "_blank"; latest.rel = "noopener"; latest.querySelector("small").textContent = ready[0].title; }
-    else latest.hidden = true;
+    var box = document.getElementById("featured-links");
+    if (!box) return;
+    var items = FILES.filter(function (f) { return f.featured && f.url; }).sort(byNewest);
+    box.innerHTML = items.map(function (f) {
+      return '<a class="link-btn primary js-download" href="' + esc(f.url) + '" target="_blank" rel="noopener"><span>' + esc(f.title) +
+        (f.desc ? '<small>' + esc(f.desc) + '</small>' : "") + '</span>' + ICON_DL + '</a>';
+    }).join("");
   }
   applyLatest();
 

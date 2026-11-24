@@ -21,7 +21,7 @@ The site can read its materials list straight from a Google Sheet, so adding a r
 2. File → Share → **Publish to web** → choose the sheet tab and **Comma-separated values (.csv)** → Publish. Copy the link.
 3. Paste that link into `sheetCsvUrl` in `assets/js/config.js` (one time only).
 
-Columns: **Title**, **Type** (Guide, Notes, PYQ, Revision, Practice paper), **Unit** (1–10 or "Whole paper"), **Link** (Drive link, sharing set to "Anyone with the link"), **Date added** (YYYY-MM-DD), **Featured** (Yes shows the row in the Featured box at the top of Free Materials, with its Title, Description and Link), **New upload** (Yes lists the row under "New uploads" on Free Materials; set it back to No when it is no longer new), **Description** (shown on the card), **Show** (No hides a row).
+Columns: **Title**, **Type** (Guide, Notes, PYQ, Revision, Practice paper), **Unit** (1–10 or "Whole paper"), **Link** (Drive link, sharing set to "Anyone with the link"), **Date added** (YYYY-MM-DD), **Featured** (Yes shows the row in the Featured box at the top of Free Materials and as a top button on the links page, with its Title, Description and Link), **New upload** (Yes lists the row under "New uploads" on Free Materials; set it back to No when it is no longer new), **Description** (shown on the card), **Show** (No hides a row).
 New rows appear on the site within about 5 minutes. If the sheet can't be reached, the site falls back to `materials-data.js`.
 
 ## Add a new study material (without the sheet)
