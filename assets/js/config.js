@@ -1,10 +1,10 @@
 /*
-  JMC Genosis site settings. Edit, save and commit. The live site updates in about a minute.
+  JMC Gnosis site settings. Edit, save and commit. The live site updates in about a minute.
 */
-window.GENOSIS_CONFIG = {
+window.GNOSIS_CONFIG = {
   instagramHandle: "jmcgnosis",       // without @
   whatsappNumber: "",                 // e.g. "919876543210" (country code, no + or spaces). Leave "" to hide WhatsApp.
-  email: "",                          // e.g. "hello@jmcgenosis.in". Leave "" to hide email.
+  email: "",                          // e.g. "hello@jmcgnosis.in". Leave "" to hide email.
   telegramUrl: "",                    // optional
   youtubeUrl: "",                     // optional
 

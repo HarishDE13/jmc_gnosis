@@ -1,4 +1,4 @@
-# JMC Genosis website
+# JMC Gnosis website
 
 Free UGC-NET / SET Journalism & Mass Communication study material. English site; live classes in Tamil are coming soon.
 Plain HTML, CSS and JavaScript with no build step. Edit a file on GitHub, commit, and the live site updates in about a minute.
@@ -11,13 +11,13 @@ Live site: https://harishde13.github.io/jmc_genosis/
 | --- | --- |
 | Instagram handle, WhatsApp number, email | `assets/js/config.js` (empty values are hidden on the site) |
 | Study materials and their Google Drive links | `assets/js/materials-data.js` |
-| Unit names and focus lines | `assets/js/materials-data.js` (`GENOSIS_UNITS`) |
+| Unit names and focus lines | `assets/js/materials-data.js` (`GNOSIS_UNITS`) |
 
 ## Easiest way: manage materials from a Google Sheet
 
 The site can read its materials list straight from a Google Sheet, so adding a row is all it takes.
 
-1. Create a Google Sheet and import `JMC-Genosis-materials-template.csv` (File → Import → Upload → Replace current sheet).
+1. Create a Google Sheet and import `JMC-Gnosis-materials-template.csv` (File → Import → Upload → Replace current sheet).
 2. File → Share → **Publish to web** → choose the sheet tab and **Comma-separated values (.csv)** → Publish. Copy the link.
 3. Paste that link into `sheetCsvUrl` in `assets/js/config.js` (one time only).
 

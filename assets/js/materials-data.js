@@ -9,7 +9,7 @@
   added: date you published it, "YYYY-MM-DD" (shows a NEW tag for 21 days)
   featured: true shows it in the big box at the top of the Materials page (use on one file)
 */
-window.GENOSIS_UNITS = [
+window.GNOSIS_UNITS = [
   { n: 1,  name: "Introduction to Journalism & Mass Communication", focus: "Communication models and theories, history of Indian journalism", tier: "Tier 1 · Master" },
   { n: 2,  name: "Development Communication",                       focus: "Development paradigms, participatory communication, community media", tier: "Tier 2 · Strong" },
   { n: 3,  name: "Reporting & Editing",                             focus: "News values, leads, beats, copy editing, news agencies", tier: "Tier 1 · Master" },
@@ -22,7 +22,7 @@ window.GENOSIS_UNITS = [
   { n: 10, name: "Communication Research",                          focus: "Research methods, sampling, data analysis", tier: "Tier 1 · Master" }
 ];
 
-window.GENOSIS_MATERIALS = [
+window.GNOSIS_MATERIALS = [
   { unit: 0, type: "guide", featured: true,
     title: "JRF Cracking Guide: UGC-NET Journalism & Mass Communication",
     desc: "A 7-page roadmap: what JRF takes, how to diagnose your gaps, the five common mistakes, where to start and the full syllabus checklist.",

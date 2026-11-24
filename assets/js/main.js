@@ -1,11 +1,11 @@
-/* JMC Genosis site script */
+/* JMC Gnosis site script */
 (function () {
   "use strict";
   document.documentElement.classList.add("js");
 
-  var CFG = window.GENOSIS_CONFIG || {};
-  var UNITS = window.GENOSIS_UNITS || [];
-  var FILES = window.GENOSIS_MATERIALS || [];
+  var CFG = window.GNOSIS_CONFIG || {};
+  var UNITS = window.GNOSIS_UNITS || [];
+  var FILES = window.GNOSIS_MATERIALS || [];
   var TYPE = { guide: "Guide", notes: "Notes", pyq: "PYQ", revision: "Revision", mock: "Practice paper" };
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -194,7 +194,7 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var name = document.getElementById("c-name").value.trim(), msg = document.getElementById("c-msg").value.trim();
-      var text = "Hi JMC Genosis, I'm " + name + ".\n\n" + msg, via = e.submitter && e.submitter.dataset.via;
+      var text = "Hi JMC Gnosis, I'm " + name + ".\n\n" + msg, via = e.submitter && e.submitter.dataset.via;
       var status = document.getElementById("c-status");
       if (via === "email" && links.email) { location.href = links.email + "?subject=" + encodeURIComponent("Message from " + name) + "&body=" + encodeURIComponent(text); status.textContent = "Your message is ready in your email app. Press send there."; }
       else if (links.whatsapp) { window.open(links.whatsapp + "?text=" + encodeURIComponent(text), "_blank", "noopener"); status.textContent = "Your message is ready in WhatsApp. Press send there."; }
