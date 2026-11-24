@@ -56,6 +56,9 @@
 
   /* ---------- JRF Guide (fixed PDF, not driven by the sheet) ---------- */
   var GUIDE_URL = CFG.guidePdfUrl || "https://drive.google.com/file/d/1wI1Hn6v-Gn_UrkSw7tmBaGiYjvWi6dT5/view";
+  // The JRF Guide lives on its own page, so it is never listed on Free Materials.
+  function notGuide(f) { return !(f.url && driveId(f.url) && driveId(f.url) === driveId(GUIDE_URL)); }
+  FILES = FILES.filter(notGuide);
   document.querySelectorAll("[data-guide-frame]").forEach(function (f) { f.src = previewUrl(GUIDE_URL); });
   document.querySelectorAll("[data-guide-download]").forEach(function (a) { a.href = downloadUrl(GUIDE_URL); a.rel = "noopener"; a.target = "_blank"; });
   document.querySelectorAll("[data-guide-open]").forEach(function (a) { a.href = GUIDE_URL; a.rel = "noopener"; a.target = "_blank"; });
@@ -285,7 +288,7 @@
     fetch(CFG.sheetCsvUrl + sep + "t=" + Math.floor(Date.now() / 60000), { cache: "no-store" })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.text(); })
       .then(function (t) {
-        var list = rowsToFiles(parseCSV(t));
+        var list = rowsToFiles(parseCSV(t)).filter(notGuide);
         if (!list.length) return;
         FILES = list; renderFeatured(); renderNewUploads(); renderMaterials(); applyLatest();
       })
