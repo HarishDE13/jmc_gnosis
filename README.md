@@ -3,7 +3,7 @@
 Free UGC-NET / SET Journalism & Mass Communication study material. English site; live classes in Tamil are coming soon.
 Plain HTML, CSS and JavaScript with no build step. Edit a file on GitHub, commit, and the live site updates in about a minute.
 
-Live site: https://harishde13.github.io/jmc_genosis/
+Live site: https://harishde13.github.io/jmc_gnosis/
 
 ## Quick edits
 
@@ -42,9 +42,9 @@ The JRF Cracking Guide is the line with `featured: true`. Its link powers the pr
 - `guide.html` JRF Cracking Guide reader with download
 - `materials.html` free downloads with search, unit and type filters
 - `classes.html` live classes in Tamil (coming soon)
-- `links.html` link-in-bio page for Instagram: `https://harishde13.github.io/jmc_genosis/links.html`
+- `links.html` link-in-bio page for Instagram: `https://harishde13.github.io/jmc_gnosis/links.html`
 - `about.html`, `contact.html`, `privacy.html`, `404.html`
 
 ## Custom domain (later)
 
-In GitHub go to **Settings → Pages → Custom domain**, enter your domain and add the DNS records GitHub shows. Then replace `https://harishde13.github.io/jmc_genosis/` with your domain in the HTML `<head>` tags, `robots.txt` and `sitemap.xml`.
+In GitHub go to **Settings → Pages → Custom domain**, enter your domain and add the DNS records GitHub shows. Then replace `https://harishde13.github.io/jmc_gnosis/` with your domain in the HTML `<head>` tags, `robots.txt` and `sitemap.xml`.
